@@ -366,6 +366,31 @@
         font-size: 0.85rem;
       }
 
+      .auth-section {
+        padding-top: 0;
+      }
+
+      .auth-card {
+        text-align: center;
+        background: linear-gradient(135deg, #f9efe9, #f3f7f5);
+      }
+
+      .auth-card p {
+        margin-bottom: 1.25rem;
+      }
+
+      .auth-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      button {
+        font: inherit;
+        cursor: pointer;
+      }
+
       .contact {
         text-align: center;
       }
@@ -623,6 +648,19 @@
         </div>
       </section>
 
+      <section id="auth" class="auth-section">
+        <div class="container">
+          <div class="card auth-card">
+            <h2>Member access</h2>
+            <p id="authStatus">Sign in to access private notes and resources.</p>
+            <div class="auth-actions">
+              <button id="signInBtn" class="button primary" type="button">Sign in with Google</button>
+              <button id="signOutBtn" class="button secondary" type="button" hidden>Sign out</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="contact" class="contact">
         <div class="container">
           <div class="contact-card">
@@ -640,5 +678,78 @@
     <footer class="site-footer">
       <div class="container">© 2026 Sophia. Crafted with clarity and care.</div>
     </footer>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        getRedirectResult,
+        onAuthStateChanged,
+        signInWithRedirect,
+        signOut
+      } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAf3nAolUDT12wd6GI2eyuokZdLCnNAIss",
+        authDomain: "personal-website-af682.firebaseapp.com",
+        projectId: "personal-website-af682",
+        storageBucket: "personal-website-af682.firebasestorage.app",
+        messagingSenderId: "36915725481",
+        appId: "1:36915725481:web:eddc11a0501d78ab93d5b8"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+
+      const signInBtn = document.getElementById("signInBtn");
+      const signOutBtn = document.getElementById("signOutBtn");
+      const authStatus = document.getElementById("authStatus");
+
+      function setAuthState(user) {
+        if (user) {
+          authStatus.textContent = `Signed in as ${user.displayName || user.email}.`;
+          signInBtn.hidden = true;
+          signOutBtn.hidden = false;
+        } else {
+          authStatus.textContent = "Sign in to access private notes and resources.";
+          signInBtn.hidden = false;
+          signOutBtn.hidden = true;
+        }
+      }
+
+      signInBtn.addEventListener("click", async () => {
+        try {
+          authStatus.textContent = "Redirecting to Google...";
+          await signInWithRedirect(auth, provider);
+        } catch (error) {
+          console.error("Authentication error:", error);
+          authStatus.textContent = "Unable to sign in right now. Please try again.";
+        }
+      });
+
+      signOutBtn.addEventListener("click", async () => {
+        try {
+          await signOut(auth);
+        } catch (error) {
+          console.error("Sign out error:", error);
+        }
+      });
+
+      onAuthStateChanged(auth, setAuthState);
+
+      getRedirectResult(auth)
+        .then((result) => {
+          if (result?.user) {
+            setAuthState(result.user);
+          }
+        })
+        .catch((error) => {
+          console.error("Redirect sign-in error:", error);
+          authStatus.textContent = "Unable to complete Google sign-in. Please try again.";
+        });
+    </script>
   </body>
 </html>
