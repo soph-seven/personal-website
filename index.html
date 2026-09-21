@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sophia | Personal Website</title>
+    <style>
+      :root {
+        --bg: #f5f0ea;
+        --panel: #fffdfb;
+        --panel-alt: #f0e6df;
+        --text: #1f1a17;
+        --muted: #5d504b;
+        --accent: #b86d52;
+        --accent-dark: #8f4f3b;
+        --line: rgba(31, 26, 23, 0.12);
+        --shadow: 0 18px 45px rgba(39, 28, 22, 0.1);
+      }
+
+      * { box-sizing: border-box; }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, #f7f3f0 0%, #f3ece8 100%);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      .container {
+        width: min(1100px, calc(100% - 2rem));
+        margin: 0 auto;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(8px);
+        background: rgba(245, 240, 234, 0.82);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 0;
+      }
+
+      .brand {
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .nav-links a:hover {
+        color: var(--text);
+      }
+
+      .button {
+        display: inline-block;
+        border-radius: 999px;
+        padding: 0.9rem 1.4rem;
+        border: 1px solid transparent;
+        font-weight: 700;
+        transition: 0.2s ease;
+      }
+
+      .button.primary {
+        background: var(--accent);
+        color: white;
+        box-shadow: var(--shadow);
+      }
+
+      .button.primary:hover {
+        background: var(--accent-dark);
+      }
+
+      .button.secondary {
+        border-color: var(--line);
+        background: rgba(255,255,255,0.4);
+      }
+
+      .button.secondary:hover {
+        border-color: rgba(31, 26, 23, 0.3);
+      }
+
+      .hero {
+        padding: 5rem 0 3rem;
+      }
+
+      .hero-inner {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        background: var(--panel-alt);
+        color: var(--accent-dark);
+        border: 1px solid rgba(184, 109, 82, 0.18);
+        padding: 0.45rem 0.8rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+      }
+
+      h1 {
+        font-size: clamp(2.6rem, 4vw, 4.5rem);
+        line-height: 1.06;
+        margin: 0 0 1rem;
+        letter-spacing: -0.05em;
+      }
+
+      .hero-copy p {
+        font-size: 1.08rem;
+        color: var(--muted);
+        max-width: 600px;
+        margin-bottom: 1.8rem;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.8rem;
+      }
+
+      .stat {
+        min-width: 120px;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.8rem;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+      }
+
+      .stat span {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .profile-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        box-shadow: var(--shadow);
+        padding: 1.2rem;
+      }
+
+      .portrait {
+        background: linear-gradient(135deg, #e9c1ae, #c2d0d4);
+        border-radius: 22px;
+        min-height: 420px;
+        display: flex;
+        align-items: end;
+        justify-content: center;
+        padding: 1rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .portrait::before {
+        content: "";
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.28);
+        top: 32px;
+        right: 24px;
+      }
+
+      .portrait::after {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        bottom: 36px;
+        left: 28px;
+      }
+
+      .portrait-figure {
+        position: relative;
+        z-index: 1;
+        width: 220px;
+        height: 310px;
+        border-radius: 30% 30% 18% 18%;
+        background: linear-gradient(180deg, #f5dacd 0%, #c88f78 100%);
+        border: 8px solid rgba(255,255,255,0.62);
+        box-shadow: inset 0 -10px 20px rgba(0,0,0,0.08);
+      }
+
+      .portrait-figure::before {
+        content: "";
+        position: absolute;
+        width: 78px;
+        height: 78px;
+        border-radius: 50%;
+        top: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #f6d3bf;
+        border: 8px solid rgba(255,255,255,0.4);
+      }
+
+      .portrait-figure::after {
+        content: "";
+        position: absolute;
+        width: 160px;
+        height: 150px;
+        border-radius: 46% 46% 30% 30%;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #f8efe9;
+      }
+
+      section {
+        padding: 2rem 0 4rem;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.8rem;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: clamp(2rem, 3vw, 3rem);
+        letter-spacing: -0.05em;
+      }
+
+      .section-head p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+
+      .card p {
+        margin-top: 0;
+        color: var(--muted);
+      }
+
+      .list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 0.8rem;
+      }
+
+      .list li {
+        position: relative;
+        padding-left: 1.3rem;
+        color: var(--text);
+      }
+
+      .list li::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .cv-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 1.5rem;
+      }
+
+      .timeline {
+        position: relative;
+        padding-left: 1.5rem;
+        border-left: 2px solid var(--line);
+      }
+
+      .timeline-item {
+        position: relative;
+        margin-bottom: 1.5rem;
+        padding: 0 0 0 1.2rem;
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -1.95rem;
+        top: 0.35rem;
+        width: 0.85rem;
+        height: 0.85rem;
+        border-radius: 50%;
+        background: var(--accent);
+        border: 3px solid #f7f1ee;
+      }
+
+      .timeline-item .meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.25rem;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      .timeline-item h3 {
+        margin: 0 0 0.25rem;
+        font-size: 1.15rem;
+      }
+
+      .timeline-item p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .skills span {
+        background: var(--panel-alt);
+        color: var(--text);
+        border: 1px solid rgba(31,26,23,0.08);
+        border-radius: 999px;
+        padding: 0.6rem 0.9rem;
+        font-size: 0.92rem;
+      }
+
+      .testimonial-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.25rem;
+      }
+
+      .quote {
+        font-size: 1.04rem;
+        color: var(--text);
+        margin: 0 0 1.25rem;
+      }
+
+      .person {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+      }
+
+      .avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d8b7aa, #bdc9d0);
+        display: grid;
+        place-items: center;
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .person strong {
+        display: block;
+      }
+
+      .person span {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .contact {
+        text-align: center;
+      }
+
+      .contact-card {
+        background: linear-gradient(135deg, #f5ebe5, #f4f0ee);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        padding: 2rem;
+        box-shadow: var(--shadow);
+      }
+
+      .contact h2 {
+        margin: 0 0 0.7rem;
+        font-size: clamp(2rem, 3vw, 3rem);
+        letter-spacing: -0.05em;
+      }
+
+      .contact p {
+        color: var(--muted);
+        margin-bottom: 1.5rem;
+      }
+
+      .site-footer {
+        padding: 1.5rem 0 2.5rem;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 840px) {
+        .hero-inner,
+        .about-grid,
+        .cv-grid,
+        .testimonial-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .section-head {
+          display: block;
+        }
+
+        .hero {
+          padding-top: 3rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a href="#top" class="brand">Sophia</a>
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="#about">About</a>
+          <a href="#cv">CV</a>
+          <a href="#testimonials">Testimonials</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <span class="eyebrow">Creative strategist</span>
+            <h1>Building thoughtful brands people genuinely trust.</h1>
+            <p>
+              Sophia helps businesses turn ideas into clear, memorable experiences.
+              From brand strategy to customer journeys, she brings structure, warmth,
+              and a sharp eye for the details that make work feel effortless.
+            </p>
+            <div class="hero-actions">
+              <a href="#cv" class="button primary">View CV</a>
+              <a href="#contact" class="button secondary">Let’s Connect</a>
+            </div>
+            <div class="stats" aria-label="Career highlights">
+              <div class="stat">
+                <strong>8+</strong>
+                <span>Years experience</span>
+              </div>
+              <div class="stat">
+                <strong>40+</strong>
+                <span>Projects launched</span>
+              </div>
+              <div class="stat">
+                <strong>96%</strong>
+                <span>Client retention</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-card">
+            <div class="portrait" aria-label="Sophia portrait illustration">
+              <div class="portrait-figure"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about">
+        <div class="container">
+          <div class="section-head">
+            <h2>About Sophia</h2>
+            <p>Strategy, storytelling, and polished execution.</p>
+          </div>
+
+          <div class="about-grid">
+            <div class="card">
+              <p>
+                Sophia is a multidisciplinary professional with a background in brand,
+                communication, and customer experience. She partners with founders,
+                teams, and small businesses to sharpen their message, improve how they
+                connect with people, and create experiences that feel both elevated and human.
+              </p>
+              <p>
+                Her work blends analytic thinking with creative instincts, helping clients
+                turn complexity into clarity and ambition into action.
+              </p>
+            </div>
+
+            <div class="card">
+              <ul class="list">
+                <li>Brand strategy and positioning</li>
+                <li>Customer experience design</li>
+                <li>Content and campaign planning</li>
+                <li>Project leadership and stakeholder management</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cv">
+        <div class="container">
+          <div class="section-head">
+            <h2>CV</h2>
+            <p>Recent work and professional background.</p>
+          </div>
+
+          <div class="cv-grid">
+            <div class="card">
+              <div class="timeline" aria-label="Work experience timeline">
+                <div class="timeline-item">
+                  <div class="meta">
+                    <span>2022 — Present</span>
+                    <span>Remote</span>
+                  </div>
+                  <h3>Senior Brand Strategist</h3>
+                  <p>North Star Studio</p>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="meta">
+                    <span>2019 — 2022</span>
+                    <span>London</span>
+                  </div>
+                  <h3>Creative Consultant</h3>
+                  <p>Independent clients across health, lifestyle, and service brands</p>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="meta">
+                    <span>2016 — 2019</span>
+                    <span>Manchester</span>
+                  </div>
+                  <h3>Marketing &amp; Communications Lead</h3>
+                  <p>Brightlane Collective</p>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="meta">
+                    <span>2012 — 2016</span>
+                    <span>Birmingham</span>
+                  </div>
+                  <h3>B.A. in Marketing &amp; Design</h3>
+                  <p>University of Birmingham</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Core strengths</h3>
+              <div class="skills" aria-label="Skills list">
+                <span>Brand Strategy</span>
+                <span>Storytelling</span>
+                <span>UX Thinking</span>
+                <span>Research</span>
+                <span>Content Planning</span>
+                <span>Client Relations</span>
+                <span>Campaign Design</span>
+                <span>Workshops</span>
+                <span>Positioning</span>
+                <span>Project Leadership</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="testimonials">
+        <div class="container">
+          <div class="section-head">
+            <h2>Testimonials</h2>
+            <p>Feedback from happy clients and collaborators.</p>
+          </div>
+
+          <div class="testimonial-grid">
+            <article class="card">
+              <p class="quote">
+                “Sophia brought clarity to our brand at exactly the moment we needed it.
+                The process was thoughtful, strategic, and incredibly practical.”
+              </p>
+              <div class="person">
+                <div class="avatar">AR</div>
+                <div>
+                  <strong>Alicia Reed</strong>
+                  <span>Founder, Reed &amp; Co.</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card">
+              <p class="quote">
+                “She understands how to make a business feel premium without losing warmth.
+                Our messaging resonated instantly with the audience.”
+              </p>
+              <div class="person">
+                <div class="avatar">MS</div>
+                <div>
+                  <strong>Marcus Shaw</strong>
+                  <span>Director, Luma Studio</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card">
+              <p class="quote">
+                “Sophia is equal parts strategic and inspiring. She helped us refocus our
+                offer and created a smoother experience for everyone involved.”
+              </p>
+              <div class="person">
+                <div class="avatar">ET</div>
+                <div>
+                  <strong>Elena Tran</strong>
+                  <span>Operations Lead, Harbor Health</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="contact">
+        <div class="container">
+          <div class="contact-card">
+            <h2>Let’s build something meaningful.</h2>
+            <p>
+              Whether you need a sharper brand, a clearer customer journey, or a trusted
+              strategic partner, Sophia is ready to help.
+            </p>
+            <a href="mailto:sophia@example.com" class="button primary">sophia@example.com</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">© 2026 Sophia. Crafted with clarity and care.</div>
+    </footer>
+  </body>
+</html>
