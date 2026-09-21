@@ -379,6 +379,54 @@
         margin-bottom: 1.25rem;
       }
 
+      .user-profile {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1.25rem;
+        padding: 1rem 1.25rem;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+      }
+
+      .user-profile.visible {
+        display: flex;
+      }
+
+      .user-avatar {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d6b4a2, #adc9d8);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        color: var(--text);
+        overflow: hidden;
+      }
+
+      .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .user-meta {
+        text-align: left;
+      }
+
+      .user-meta strong {
+        display: block;
+        font-size: 1.05rem;
+      }
+
+      .user-meta span {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
       .auth-actions {
         display: flex;
         justify-content: center;
@@ -653,6 +701,13 @@
           <div class="card auth-card">
             <h2>Member access</h2>
             <p id="authStatus">Sign in to access private notes and resources.</p>
+            <div id="userProfile" class="user-profile" aria-live="polite">
+              <div id="userAvatar" class="user-avatar" aria-label="User avatar">S</div>
+              <div class="user-meta">
+                <strong id="userDisplayName">Signed in user</strong>
+                <span id="userEmail">user@example.com</span>
+              </div>
+            </div>
             <div class="auth-actions">
               <button id="signInBtn" class="button primary" type="button">Sign in with Google</button>
               <button id="signOutBtn" class="button secondary" type="button" hidden>Sign out</button>
@@ -684,9 +739,8 @@
       import {
         getAuth,
         GoogleAuthProvider,
-        getRedirectResult,
         onAuthStateChanged,
-        signInWithRedirect,
+        signInWithPopup,
         signOut
       } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
@@ -707,14 +761,41 @@
       const signInBtn = document.getElementById("signInBtn");
       const signOutBtn = document.getElementById("signOutBtn");
       const authStatus = document.getElementById("authStatus");
+      const userProfile = document.getElementById("userProfile");
+      const userAvatar = document.getElementById("userAvatar");
+      const userDisplayName = document.getElementById("userDisplayName");
+      const userEmail = document.getElementById("userEmail");
 
       function setAuthState(user) {
         if (user) {
-          authStatus.textContent = `Signed in as ${user.displayName || user.email}.`;
+          const displayName = user.displayName || user.email?.split("@")[0] || "Member";
+          const email = user.email || "No email available";
+          const initials = displayName
+            .split(" ")
+            .map((part) => part[0])
+            .slice(0, 2)
+            .join("")
+            .toUpperCase();
+
+          authStatus.textContent = `Signed in as ${displayName}.`;
+          userDisplayName.textContent = displayName;
+          userEmail.textContent = email;
+
+          if (user.photoURL) {
+            userAvatar.innerHTML = `<img src="${user.photoURL}" alt="${displayName} profile photo" />`;
+          } else {
+            userAvatar.textContent = initials || "M";
+          }
+
+          userProfile.classList.add("visible");
           signInBtn.hidden = true;
           signOutBtn.hidden = false;
         } else {
           authStatus.textContent = "Sign in to access private notes and resources.";
+          userProfile.classList.remove("visible");
+          userDisplayName.textContent = "Signed in user";
+          userEmail.textContent = "user@example.com";
+          userAvatar.textContent = "S";
           signInBtn.hidden = false;
           signOutBtn.hidden = true;
         }
@@ -722,8 +803,9 @@
 
       signInBtn.addEventListener("click", async () => {
         try {
-          authStatus.textContent = "Redirecting to Google...";
-          await signInWithRedirect(auth, provider);
+          authStatus.textContent = "Opening Google sign-in...";
+          const result = await signInWithPopup(auth, provider);
+          setAuthState(result.user);
         } catch (error) {
           console.error("Authentication error:", error);
           authStatus.textContent = "Unable to sign in right now. Please try again.";
@@ -738,18 +820,13 @@
         }
       });
 
-      onAuthStateChanged(auth, setAuthState);
-
-      getRedirectResult(auth)
-        .then((result) => {
-          if (result?.user) {
-            setAuthState(result.user);
-          }
-        })
-        .catch((error) => {
-          console.error("Redirect sign-in error:", error);
-          authStatus.textContent = "Unable to complete Google sign-in. Please try again.";
-        });
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setAuthState(user);
+        } else {
+          setAuthState(null);
+        }
+      });
     </script>
   </body>
 </html>
